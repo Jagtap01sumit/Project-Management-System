@@ -51,7 +51,6 @@ const projectSchema = new mongoose.Schema({
   phases: [
     {
       type: [phaseSchema],
-      default: [],
     },
   ],
 });

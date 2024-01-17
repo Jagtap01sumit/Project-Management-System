@@ -10,12 +10,13 @@ import {
   Paper,
 } from "@mui/material";
 import { CalenderTimeline } from "@/components";
+import randomColor from "randomcolor";
 
 import { getAllProjects } from "@/redux/actions/admin/project-action";
 import { getAllEmployees } from "@/redux/actions/admin/employee-action";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { getTeams } from '@/redux/actions/admin/teamAction'
+import { getTeams } from "@/redux/actions/admin/teamAction";
 export const ProjectDetails = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -23,11 +24,11 @@ export const ProjectDetails = () => {
   const dispatch = useDispatch();
   const { employees } = useSelector((state) => state.adminEmployeeReducer);
   const { projects } = useSelector((state) => state.projectReducer);
-  const { teams } = useSelector(state => state.teamReducer)
+
+  const { teams } = useSelector((state) => state.teamReducer);
   useEffect(() => {
-    dispatch(getTeams())
-}, [])
-console.log(teams)
+    dispatch(getTeams());
+  }, []);
   useEffect(() => {
     dispatch(getAllProjects());
   }, []);
@@ -39,9 +40,27 @@ console.log(teams)
   if (!projects) {
     return <div>Loading...</div>;
   }
-console.log(projects)
+  console.log("DEBUG: ", projects);
 
   const Details = projects.filter((entries) => entries._id === id);
+  const phases = {
+    groups: Details?.[0]?.phases?.map((phase, index) => ({
+      id: index,
+      title: phase?.phaseName,
+    })),
+    items: Details?.[0]?.phases?.map((phase, index) => {
+      let randomSeed = Math.floor(Math.random() * 1000);
+      const item = {
+        id: index,
+        group: index,
+        title: phase.phaseName,
+        start_time: new Date(phase.phaseStart).getTime(),
+        end_time: new Date(phase.phaseEnd).getTime(),
+        color: randomColor({ luminosity: "blue", seed: randomSeed }),
+      };
+      return item;
+    }),
+  };
 
   const getEmployee = (id) => {
     if (employees) {
@@ -49,36 +68,35 @@ console.log(projects)
     }
   };
 
-
   return (
     <>
       {Details &&
         Details.map((info) => (
           <Box mt={4}>
             <Box p={2} className="projectDetail d-flex justify-between">
-              <Grid container >
+              <Grid container>
                 <Typography variant="h3" className="fw-semibold" gutterBottom>
                   {info.projectName}
                 </Typography>
               </Grid>
-              <Grid container className=' justify-content-end' >
+              <Grid container className=" justify-content-end">
                 <Typography variant="h3" className="fw-semibold " gutterBottom>
                   Due Date :
                 </Typography>
-                <Typography variant="h5"  gutterBottom>
-                  { new Date(info.dueDate).toDateString()}
+                <Typography variant="h5" gutterBottom>
+                  {new Date(info.dueDate).toDateString()}
                 </Typography>
               </Grid>
             </Box>
-         <Box p={2} className="projectDetail mt-2">
-              <Grid container> 
-              <Typography variant="h3" className="fw-semibold" gutterBottom>
-          Project Timeline
-        </Typography>
-              
-                <CalenderTimeline/>
-           </Grid>
-            </Box> 
+            <Box p={2} className="projectDetail mt-2">
+              <Grid container>
+                <Typography variant="h3" className="fw-semibold" gutterBottom>
+                  Project Timeline
+                </Typography>
+
+                <CalenderTimeline items={phases.items} groups={phases.groups} />
+              </Grid>
+            </Box>
 
             <Box p={2} className="projectDetail mt-2">
               <Typography
@@ -121,22 +139,25 @@ console.log(projects)
                       {info.collaborator &&
                         info.collaborator
                           .map((item) => getEmployee(item))
-                          .map((item) => ( item &&
-                            <TableBody>
-                              <TableCell>
-                                <Avatar
-                                  key={item}
-                                  alt="img"
-                                  src={item.displayProfile}
-                                />
-                              </TableCell>
-                              <TableCell>{item.firstName}</TableCell>
-                              <TableCell>{item.lastName}</TableCell>
-                              <TableCell>{item.designation}</TableCell>
-                              <TableCell>{item.email}</TableCell>
-                              <TableCell>{item.phone}</TableCell>
-                            </TableBody>
-                          ))}
+                          .map(
+                            (item) =>
+                              item && (
+                                <TableBody>
+                                  <TableCell>
+                                    <Avatar
+                                      key={item}
+                                      alt="img"
+                                      src={item.displayProfile}
+                                    />
+                                  </TableCell>
+                                  <TableCell>{item.firstName}</TableCell>
+                                  <TableCell>{item.lastName}</TableCell>
+                                  <TableCell>{item.designation}</TableCell>
+                                  <TableCell>{item.email}</TableCell>
+                                  <TableCell>{item.phone}</TableCell>
+                                </TableBody>
+                              )
+                          )}
                     </Table>
                   </TableContainer>
                 </Grid>
