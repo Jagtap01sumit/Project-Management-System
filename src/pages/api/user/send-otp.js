@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
 import connectDB from "@/config/db";
 
-await connectDB()
+await connectDB();
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -15,7 +15,9 @@ let transporter = nodemailer.createTransport({
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, message: 'Method is not allowed.' });
+    return res
+      .status(405)
+      .json({ success: false, message: "Method is not allowed." });
   }
 
   const { data } = JSON.parse(req.body);
@@ -24,21 +26,24 @@ export default async function handler(req, res) {
     const { email } = data;
 
     if (!email) {
-      return res.status(400).json({ success: false, message: "Invalid request payload." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid request payload." });
     }
 
     const user = await Employee.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: "User not found." });
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found." });
     }
 
     sendOTPverificationEmail(user._id, email, res);
-
   } catch (error) {
     return res.status(500).json({ error: error.message, success: false });
   }
-};
+}
 
 function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -57,10 +62,15 @@ const sendOTPverificationEmail = async (_id, email, res) => {
     const hashedOTP = await bcryptjs.hash(otp, saltRounds);
 
     await Employee.findByIdAndUpdate(_id, { otp: hashedOTP });
-
+    console.log(otp);
+    console.log(process.env.USER_EMAIL);
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, meassge: "OTP is sent on your email.", email });
+    res
+      .status(200)
+      .json({ success: true, meassge: "OTP is sent on your email.", email });
+    console.log(res);
   } catch (error) {
+    console.log("err", error);
     res.status(500).json({ status: "FAILED", message: error.message });
   }
 };

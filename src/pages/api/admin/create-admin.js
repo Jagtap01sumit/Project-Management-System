@@ -1,5 +1,3 @@
-
-
 import Admin from "@/models/adminModel";
 import connectDB from "@/config/db";
 import bcryptjs from "bcryptjs";
@@ -7,15 +5,13 @@ import bcryptjs from "bcryptjs";
 import nodemailer from "nodemailer";
 
 let transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.USER_EMAIL,
     pass: process.env.EMAIL_PASSWORD,
-
   },
 });
 connectDB();
-
 
 export default async function handler(req, res) {
   let data;
@@ -32,22 +28,18 @@ export default async function handler(req, res) {
 
     if (user) {
       if (user._doc.verified) {
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist., Try Login",
-            success: false,
-            verified: true,
-          });
+        return res.status(400).json({
+          message: "User is already exist., Try Login",
+          success: false,
+          verified: true,
+        });
       } else {
         await sendOTPverificationEmail(user._doc, res);
-        return res
-          .status(400)
-          .json({
-            message: "User is already exist, Verification Pending",
-            success: false,
-            verified: false,
-          });
+        return res.status(400).json({
+          message: "User is already exist, Verification Pending",
+          success: false,
+          verified: false,
+        });
       }
     }
 
