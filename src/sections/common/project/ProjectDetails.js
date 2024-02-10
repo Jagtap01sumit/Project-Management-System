@@ -36,7 +36,7 @@ export const ProjectDetails = () => {
   useEffect(() => {
     dispatch(getAllEmployees());
   }, []);
-
+  console.log("emp", employees);
   if (!projects) {
     return <div>Loading...</div>;
   }

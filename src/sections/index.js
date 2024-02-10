@@ -1,10 +1,13 @@
 //common
-export {ProjectDetails} from "./common/project/ProjectDetails";
+export { ProjectDetails } from "./common/project/ProjectDetails";
 export { default as Head } from "./common/head";
 
 // layout
 export { default as Header } from "./layout/auth/admin/header";
 export { default as Footer } from "./layout/auth/admin/footer";
+
+//maindashboard
+export { default as MainDashboard } from "./dashboard/maindashboard/MainDashboard";
 
 // dashboard/user
 export { default as UserMainContainer } from "./dashboard/user/main-container";
