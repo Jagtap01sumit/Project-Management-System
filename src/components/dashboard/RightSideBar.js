@@ -1,14 +1,14 @@
 import React from "react";
-// import Update from "../Updates/Update";
 
 import CustomerReview from "./CustomerREview/CustomerReview";
+import Updates from "../updates/Updates";
 
 export default function RightSideBar() {
   return (
     <div className="RightSide">
       <div>
         <h3>Updates</h3>
-        {/* <Update /> */}
+        <Updates />
       </div>
       <div>
         <h3>Customer Review</h3>
