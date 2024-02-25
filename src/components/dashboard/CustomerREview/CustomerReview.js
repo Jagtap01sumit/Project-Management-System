@@ -58,7 +58,7 @@ export default function CustomerReview() {
   return (
     <div className="CustomerReview">
       <Chart
-        style={{ color: "white" }}
+        style={{ color: "green" }}
         options={data.options}
         series={data.series}
         type="area"
